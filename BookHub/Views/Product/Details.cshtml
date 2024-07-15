@@ -1,0 +1,139 @@
+﻿@model ProductListMode
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-3">
+                     Product Details
+                </h2>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row" mt-3>
+
+            <div class="col-6 col-md-3 text-muted">
+           
+                <a asp-area="" asp-controller="Product" asp-action="Index">Back to List</a>
+
+            </div>
+
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            <input asp-for="Items.Id" hidden />
+
+            <div>
+                <div class="row">
+
+
+                    <div class="col-10">
+                        <div class="border p-3 mt-4">
+
+                            @* <div asp-validation-summary="ModelOnly"></div>*@
+                            <div class="mb-3 row p-1">
+                                <label asp-for="Items.Name" class="p-0"> </label>
+                                <input asp-for="Items.Name" readonly="readonly" class="form-control" />
+                                <span asp-validation-for="Items.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="row">
+                                
+
+                                <div class="row col-8">
+
+                                    <label asp-for="Items.catId" class="ms-2"></label>
+                                    <div class="form-floating py-2 col-8">
+                                        <select asp-for="Items.catId" asp-items="ViewBag.CategoryList" class="form-select borderr-0 shadow" disabled>
+                                        <option disabled selected>
+                                            --Select Category--
+                                        </option>
+                                    </select>
+
+
+                                        <span asp-validation-for="Items.catId" class="text-danger"></span>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="mb-3 col-4 p-1">
+                                    <label asp-for="Items.Price" class="p-0"> </label>
+                                    <input asp-for="Items.Price" readonly="readonly" class="form-control" />
+                                    <span asp-validation-for="Items.Price" class="text-danger"></span>
+                                </div>
+
+
+                            </div>
+
+
+                            <div class="container" style=" display:flex; justify-content:center;  align-items: center;">
+                                <img class="center-image" src="@Model.Items.ImageUrl" width="180" height="180" />
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+
+         
+
+           
+
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+<div class="container pt-5">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">Exit WareHouse List</h2>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>WareHouse Name</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var obj in Model.InventoryItems)
+            {
+                <tr>
+                    <td>@obj.WareHouse.Name</td>
+                    <td>@obj.Quantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>

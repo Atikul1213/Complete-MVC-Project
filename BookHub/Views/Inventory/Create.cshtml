@@ -1,0 +1,255 @@
+﻿<h2>Inventory Create Page</h2>
+@model InventoryModel
+
+
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-3">
+                    Create Inventory
+                </h2>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <div class="border p-3">
+
+
+                @* <div asp-validation-summary="ModelOnly"> </div>*@
+
+
+
+                <div class="form-floating py-2 col-12">
+                    <label asp-for="productId" class="ms-2">Product</label>
+                    <select name="ProductId" id="IdProduct" asp-for="productId" asp-items="Model.productList" class="form-select border-0 shadow">
+                        <option disabled selected>
+                            --Select Product--
+                        </option>
+                    </select>
+                    <span asp-validation-for="productId" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="warHouseId"  id="IdWareHouse" asp-items="Model.wareHouseList"  class="form-select border-0 shadow">
+                        <option disabled selected>
+                            --Select warehouse--
+                        </option>
+                    </select>
+                    <label asp-for="warHouseId" class="ms-2"></label>
+                    <span asp-validation-for="warHouseId" class="text-danger"></span>
+                </div>
+
+
+
+
+                <div class="mb-3 row p-1">
+                    <label asp-for="Quantity" class="p-0"> </label>
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+
+                
+
+
+         
+                <div class="row" pt-2>
+
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Create</button>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Inventory" asp-action="Index" class="btn btn-outline-primary border form-control">
+                            Back to List
+                        </a>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            $('#IdProduct, #IdWareHouse').change(function () {
+                var productId = $('#IdProduct').val();
+                var warHouseId = $('#IdWareHouse').val();
+
+                // Check if both productId and warHouseId have valid values
+                if (productId > 0 && warHouseId > 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Inventory/GetQuantity',
+                        data: { productId: productId, warHouseId: warHouseId },
+                        success: function (response) {
+                            $('#Quantity').val(response);
+                        },
+                        error: function (response) {
+                            alert('Error fetching quantity.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* 
+
+
+
+
+
+
+
+  <script>
+        $(document).ready(function () {
+            $('#productId, #wareHouseId').change(function () {
+                var productId = $('#productId').val();
+                var warHouseId = $('#wareHouseId').val();
+
+                // Check if both productId and warHouseId have valid values
+                if (productId > 0 && warHouseId > 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Inventory/GetQuantity',
+                        data: { productId: productId, warHouseId: warHouseId },
+                        success: function (response) {
+                            $('#Quantity').val(response);
+                        },
+                        error: function (response) {
+                            alert('Error fetching quantity.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
+ <script>
+        $(document).ready(function () {
+            $('#ProductId, #WareHouseId').change(function () {
+                var productId = $('#ProductId').val();
+                var warHouseId = $('#WareHouseId').val();
+
+                // Check if both productId and warHouseId have valid values
+                if (productId > 0 && warHouseId > 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Inventory/GetQuantity',
+                        data: { productId: productId, warHouseId: warHouseId },
+                        success: function (response) {
+                            $('#Quantity').val(response);
+                        },
+                        error: function (response) {
+                            alert('Error fetching quantity.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+    <script>
+        $("#ProductId").change(function () {
+    <script>
+        $if($('#ProductId').val() > 0 && $('#WareHouseId').val() > 0){
+
+            $(document).ready(function () {
+                $('#ProductId, #WareHouseId').change(function () {
+                    var productId = $('#ProductId').val();
+                    var warHouseId = $('#WareHouseId').val();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Inventory/GetQuantity',
+                        data: { productId: productId, warHouseId: warHouseId },
+                        success: function (response) {
+                            $('#Quantity').val(response);
+                        },
+                        error: function (response) {
+                            alert('Error fetching quantity.');
+                        }
+                    });
+                });
+            });
+        }
+    </script>
+
+            var productId = $("#ProductId").val;
+            var json = { ProductId: productId };
+
+            $.ajax({
+                type : "POST",
+                url: "/Inventory/GetWareHouseBy",
+                data: json,
+
+                success: function (response) {
+                    var products = response;
+
+                    $.each(products, function (key, Product) {
+                        var option = "<option value=" + Product.productId + ">" + Product.Name + "</option>";
+                    })
+
+                    $('#ProductId').append(option);
+                },
+                
+                error: function (response) {
+                    alert(response.message);
+                }
+
+            });
+
+        });
+    </script>
+    
+   *@

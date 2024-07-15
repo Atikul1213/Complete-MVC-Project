@@ -1,0 +1,154 @@
+﻿@model List<ProductListMode>
+
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">Product List</h2>
+        </div>
+
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-bookmark-plus-fill"></i>Create New Product
+            </a>
+        </div>
+
+    </div>
+
+    <table id="myTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                @* <th>Options</th> *@
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>CategoryName</th>
+                
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+          @*   @foreach (var obj in Model)
+            {
+                <tr>
+                    <td>@obj.Name</td>
+                    <td>@obj.Price</td>
+                    <td>@obj.Category?.Name</td>
+                    <td>@obj.ImageUrl</td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@obj.Id" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
+
+                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            } *@
+        </tbody>
+    </table>
+
+
+</div>
+
+
+
+@section Scripts {
+  
+
+    <script>
+        $(document).ready(function () {
+            // function format(d) {
+            //     // `d` is the original data object for the row
+  
+            //     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+            //         '<tr>' +
+            //         '<td>Full name:</td>' +
+            //         '<td>' + d.inventoryItems.quantity + '</td>' +
+            //         '</tr>' +
+            //         '<tr>' +
+            //         '<td>Price:</td>' +
+            //         '<td>' + d.inventoryItems.wareHouse.name + '</td>' +
+            //         '</tr>' +
+            //         '<tr>' +
+            //         '<td>Category:</td>' +
+            //         '<td>' + d.category.name + '</td>' +
+            //         '</tr>' +
+            //         '</table>';
+            // }
+
+            function format(d) {
+                var inventoryHtml = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                    '<tr>' +
+                    '<th>Quantity</th>' +
+                    '<th>Warehouse</th>' +
+                    '</tr>';
+
+                d.inventoryItems.forEach(item => {
+                    inventoryHtml += '<tr>' +
+                        '<td>' + item.quantity + '</td>' +
+                        '<td>' + item.wareHouse.name + '</td>' +
+                        '</tr>';
+                });
+
+                inventoryHtml += '</table>';
+                return inventoryHtml;
+            }
+
+
+
+            var table = $('#myTable').DataTable({
+                "ajax": {
+                    "url": "@Url.Action("GetAll", "Product")",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "className": 'dt-control',
+                        "orderable": true,
+                        "data": "items.name", "name": "Product Name",
+                       
+                        "defaultContent": '',
+                    },
+
+
+                    { "data": "items.price", "name": "Price" },
+                    { "data": "items.category.name", "name": "Category Name" },
+                    {
+                        "data": "items.id",
+                        "render": function (data) {
+                            return `<div class="w-75 btn-group" role="group">
+                                                <a href="/Product/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                                                        <a href="/Product/Details/${data}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
+
+                                                <a href="/Product/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                            </div>`;
+                        },
+                        "orderable": false
+                    }
+                ],
+                "order": [[1, 'asc']]
+            });
+
+            // Add event listener for opening and closing details
+            $('#myTable tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+    </script>
+}
+
+
+ 

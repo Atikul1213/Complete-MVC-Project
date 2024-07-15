@@ -1,0 +1,90 @@
+﻿@model InventoryListMode
+ 
+
+
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">Inventory List</h2>
+        </div>
+
+        <div class="col-6 text-end">
+            <a asp-controller="Inventory" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-bookmark-plus-fill"></i>Create New Inventory
+            </a>
+        </div>
+
+    </div>
+
+    <table id="myTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>WareHouse</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+           @*  @if(Model.Items.Count>0){
+                @foreach (var obj in Model.Items)
+                {
+                    <tr>
+                        <td>@obj.Product?.Name</td>
+                        <td>@obj.Product?.Price</td>
+                        <td>@obj.WareHouse?.Name</td>
+                        <td>@obj.Quantity</td>
+                        <td>
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-controller="Inventory" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+
+                                <a asp-controller="Inventory" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            } *@
+        </tbody>
+
+    </table>
+
+
+</div>
+
+
+
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+
+                "ajax": {
+                    "url": "@Url.Action("GetAll", "Inventory")",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "product.name", "name": "Product Name" },
+                    { "data": "product.price", "name": "Price" },
+                    { "data": "wareHouse.name", "name": "WareHouse" },
+                    { "data": "quantity", "name": "Quantity" },
+                    {
+                        "data": "id",
+                        "render": function (data) {
+                            return `<div class="w-75 btn-group" role="group">
+                                     <a href="/Inventory/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                                     <a href="/Inventory/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                     </div>`;
+                        },
+                        "orderable": false
+                    }
+                ]
+            });
+        });
+    </script>
+}

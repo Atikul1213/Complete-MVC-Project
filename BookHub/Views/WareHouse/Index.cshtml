@@ -1,0 +1,45 @@
+﻿<h2>WareHouse Index View</h2>
+@model List<WareHouseModel>
+
+
+<div class="container">
+    <div class="row pt-4 pb-3">
+        <div class="col-6">
+            <h2 class="text-primary">WareHouse List</h2>
+        </div>
+
+        <div class="col-6 text-end">
+            <a asp-controller="WareHouse" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-bookmark-plus-fill"></i>Create New WareHouse
+            </a>
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>WareHouse Name</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td>@obj.Name</td>
+                    <td>
+                        <div class="w-75 btn-group" role="group">
+                            <a asp-controller="WareHouse" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+
+                            <a asp-controller="WareHouse" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+</div>
