@@ -27,44 +27,53 @@ namespace BookHub.Controllers
         }
         public IActionResult Index()
         {
-            //List<Category> obj = _db.Categories.ToList();
-           // var obj = _productModelFactory.PrepareListModel();
-            var listproduct = _productService.GetAllProducts();
-
-            List<ProductListMode> productListModel  = new List<ProductListMode>();
-
-            foreach(var x in listproduct)
+            
+           
+            var model = new ProductSearchModel
             {
-                ProductListMode obj = _productModelFactory.PrepareProductListModel(x.Id);
-                productListModel.Add(obj);
+                categoryList = _categoryService.GetAllCategories().Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString()
+                }).ToList(),
 
-            }
+            };
 
 
-            return View(productListModel);
+            return View(model);
         }
 
+  
+    
 
-
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpPost]
+        public IActionResult GetAll(int catid, string prodName, int price)
         {
-            //var obj = _productModelFactory.PrepareListModel();
+
+
             var listproduct = _productService.GetAllProducts();
 
             List<ProductListMode> productListModel = new List<ProductListMode>();
+            List<ProductListMode> productListModelRet = new List<ProductListMode>();
 
             foreach (var x in listproduct)
             {
                 ProductListMode obj = _productModelFactory.PrepareProductListModel(x.Id);
-                productListModel.Add(obj);
-
+                //bool ck = false; 
+                //if( catid>0 && obj.Items.categoryId == catid) ck = true;
+                //if(price>0 && obj.Items.Price<=price) ck = true;
+                //if(prodName!=null && obj.Items.Name.Contains(prodName)) ck = true;
+                //if(ck==true)
+                    productListModel.Add(obj);
             }
 
-
-
-
-            return Json(new { data = productListModel });
+            if (productListModelRet.Count > 0)
+            {
+                productListModelRet = productListModel.Where(x => (catid == 0 ||
+                x.Items.categoryId == catid) && (prodName == null ||
+                x.Items.Name.Contains(prodName)) && (price == 0 || x.Items.Price <= price)).ToList();
+            }
+            return Json(new { data = productListModelRet });
 
         }
 

@@ -35,7 +35,8 @@ namespace BookHub.Factories
             model.ImageUrl = product.ImageUrl;
             model.catId = product.catId;
             model.Category = _categoryService.GetCategoryById(product.catId);
-             
+            model.productId = product.Id;
+            model.categoryId = product.catId;
             
 
             return model;
@@ -45,7 +46,7 @@ namespace BookHub.Factories
         {
 
             return _productService.GetAllProducts()
-                  .Select(cat => new ProductModel { Name = cat.Name , Id = cat.Id, Price = cat.Price, catId = cat.catId, ImageUrl= cat.ImageUrl, Category= _categoryService.GetCategoryById(cat.catId)})
+                  .Select(cat => new ProductModel { Name = cat.Name , Id = cat.Id, Price = cat.Price, catId = cat.catId, ImageUrl= cat.ImageUrl,categoryId=cat.catId,productId=cat.Id,  Category= _categoryService.GetCategoryById(cat.catId)})
                   .ToList();
 
         }
@@ -66,6 +67,8 @@ namespace BookHub.Factories
                 Price = product.Price,
                 ImageUrl = product.ImageUrl,
                 catId = product.catId,
+                productId = product.Id,
+                categoryId = product.catId,
                 Category = _categoryService.GetCategoryById(product.catId)
             };
 

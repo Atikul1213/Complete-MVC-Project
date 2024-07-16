@@ -22,6 +22,9 @@ namespace BookHub.Models
         public int Price { get; set; }
         [ValidateNever]
         public string ImageUrl { get; set; }
+
+        public int productId { get; set; }
+        public int categoryId { get; set; }
  
         [Required]
         [DisplayName("Category")]
