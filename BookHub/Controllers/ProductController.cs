@@ -67,7 +67,7 @@ namespace BookHub.Controllers
                     productListModel.Add(obj);
             }
 
-            if (productListModelRet.Count > 0)
+            if (productListModel.Count > 0)
             {
                 productListModelRet = productListModel.Where(x => (catid == 0 ||
                 x.Items.categoryId == catid) && (prodName == null ||

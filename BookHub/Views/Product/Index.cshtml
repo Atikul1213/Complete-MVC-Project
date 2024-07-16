@@ -96,23 +96,24 @@
 
     <script>
         $(document).ready(function () {
-             e = true,
+             
 
-            $("#mybutton").click(function (e) {
-                e.preventDefault(); // Prevent the default form submission
-                var catid = $("#catid").val();
-                var prodName = $("#prodname").val();
-                var price = $("#price").val();
-                console.log('Successfully returned outer');
-                $.ajax({
-                    type: 'POST',
-                    "url": "@Url.Action("GetAll", "Product")",
-                    data: { catid: catid, prodName: prodName, price: price },
-                    success: function (response) {
-                        console.log('Successfully returned ', response.data);
-                        $('#myTable tbody').empty(); // Clear the table body first
-                        response.data.forEach(item => {
-                            $('#myTable tbody').append(`
+       
+
+                function loadProducts() {
+                    var catid = $("#catid").val();
+                    var prodName = $("#prodname").val();
+                    var price = $("#price").val();
+                    console.log('Successfully returned outer');
+                    $.ajax({
+                        type: 'POST',
+                        "url": "@Url.Action("GetAll", "Product")",
+                        data: { catid: catid, prodName: prodName, price: price },
+                        success: function (response) {
+                            console.log('Successfully returned ', response.data);
+                            $('#myTable tbody').empty(); // Clear the table body first
+                            response.data.forEach(item => {
+                                $('#myTable tbody').append(`
                                                 <tr>
                                                     <td>${item.items.name}</td>
                                                     <td>${item.items.price}</td>
@@ -126,16 +127,20 @@
                                                     </td>
                                                 </tr>
                               `);
-                        });
-                    },
-                    error: function (response) {
-                        console.log('Successfully returned error');
-                        alert('Error fetching quantity.');
-                    }
-                });
+                            });
+                        },
+                        error: function (response) {
+                            console.log('Successfully returned error');
+                            alert('Error fetching quantity.');
+                        }
+                    });
+                }
 
+            loadProducts();
 
-
+            $("#mybutton").click(function (e) {
+                e.preventDefault();
+                loadProducts();
             });
 
 
