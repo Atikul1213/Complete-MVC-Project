@@ -90,52 +90,45 @@
 
 
 
-
-
 @section Scripts {
-
     <script>
         $(document).ready(function () {
-             
-
-       
-
-                function loadProducts() {
-                    var catid = $("#catid").val();
-                    var prodName = $("#prodname").val();
-                    var price = $("#price").val();
-                    console.log('Successfully returned outer');
-                    $.ajax({
-                        type: 'POST',
-                        "url": "@Url.Action("GetAll", "Product")",
-                        data: { catid: catid, prodName: prodName, price: price },
-                        success: function (response) {
-                            console.log('Successfully returned ', response.data);
-                            $('#myTable tbody').empty(); // Clear the table body first
-                            response.data.forEach(item => {
-                                $('#myTable tbody').append(`
-                                                <tr>
-                                                    <td>${item.items.name}</td>
-                                                    <td>${item.items.price}</td>
-                                                    <td>${item.items.category.name}</td>
-                                                    <td>
-                                                        <div class="w-75 btn-group" role="group">
-                                                            <a href="/Product/Edit/${item.items.id}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
-                                                            <a href="/Product/Details/${item.items.id}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
-                                                            <a href="/Product/Delete/${item.items.id}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                              `);
-                            });
-                        },
-                        error: function (response) {
-                            console.log('Successfully returned error');
-                            alert('Error fetching quantity.');
+            var table = $('#myTable').DataTable({
+                columns: [
+                    { data: 'items.name', title: 'Product Name' },
+                    { data: 'items.price', title: 'Price' },
+                    { data: 'items.category.name', title: 'Category Name' },
+                    {
+                        data: 'items.id',
+                        orderable: false,
+                        render: function (data) {
+                            return `
+                                        <div class="w-75 btn-group" role="group">
+                                            <a href="/Product/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                                            <a href="/Product/Details/${data}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
+                                            <a href="/Product/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                        </div>`;
                         }
-                    });
-                }
+                    }
+                ]
+            });
 
+            function loadProducts() {
+                var catid = $("#catid").val();
+                var prodName = $("#prodname").val();
+                var price = $("#price").val();
+                $.ajax({
+                    type: 'POST',
+                    "url": "@Url.Action("GetAll", "Product")",
+                    data: { catid: catid, prodName: prodName, price: price },
+                    success: function (response) {
+                        table.clear().rows.add(response.data).draw();
+                    },
+                    error: function () {
+                        alert('Error fetching data.');
+                    }
+                });
+            }
             loadProducts();
 
             $("#mybutton").click(function (e) {
@@ -143,8 +136,20 @@
                 loadProducts();
             });
 
+            // Initial load
+
+
+
+
+
+
+
+
+
 
         });
+
+
 
 
     </script>
