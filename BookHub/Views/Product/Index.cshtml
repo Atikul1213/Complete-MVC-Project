@@ -88,13 +88,60 @@
 
 </div>
 
-
-
+ 
 @section Scripts {
     <script>
         $(document).ready(function () {
+
+            function format(d) {
+                var inventoryDetails = '';
+
+                // Ajax call to fetch inventory details
+                $.ajax({
+                    url: '@Url.Action("GetInventoryDetails", "Product")', // Create this action in your controller
+                    type: 'GET',
+                    data: { productId: d.items.id },
+                    async: false,
+                    success: function (response) {
+                        if (response.length > 0) {
+                            inventoryDetails = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                               
+                                '<tr>' +
+                                '<td colspan="2"><strong>Inventory Details:</strong></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td>Warehouse Name</td>' +
+                                '<td>Quantity</td>' +
+                                '</tr>';
+
+                            response.forEach(function (item) {
+                                inventoryDetails += '<tr>' +
+                                    '<td>' + item.warehouse + '</td>' +
+                                    '<td>' + item.quantity + '</td>' +
+                                    '</tr>';
+                            });
+
+                            inventoryDetails += '</table>';
+                        } else {
+                            inventoryDetails = '<tr><td colspan="2">No inventory details available.</td></tr>';
+                        }
+                    },
+                    error: function () {
+                        inventoryDetails = '<tr><td colspan="2">Error fetching inventory details.</td></tr>';
+                    }
+                });
+
+                return inventoryDetails;
+            }
+
             var table = $('#myTable').DataTable({
+                rows: { "className": 'rowId' },
                 columns: [
+                    {
+                        "className": 'dt-control',
+                        "orderable": true,
+                        "defaultContent": '',
+                    },
                     { data: 'items.name', title: 'Product Name' },
                     { data: 'items.price', title: 'Price' },
                     { data: 'items.category.name', title: 'Category Name' },
@@ -113,6 +160,21 @@
                 ]
             });
 
+            $('#myTable tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
             function loadProducts() {
                 var catid = $("#catid").val();
                 var prodName = $("#prodname").val();
@@ -120,6 +182,7 @@
                 $.ajax({
                     type: 'POST',
                     "url": "@Url.Action("GetAll", "Product")",
+                   
                     data: { catid: catid, prodName: prodName, price: price },
                     success: function (response) {
                         table.clear().rows.add(response.data).draw();
@@ -129,28 +192,13 @@
                     }
                 });
             }
+
             loadProducts();
 
             $("#mybutton").click(function (e) {
                 e.preventDefault();
                 loadProducts();
             });
-
-            // Initial load
-
-
-
-
-
-
-
-
-
-
         });
-
-
-
-
     </script>
 }

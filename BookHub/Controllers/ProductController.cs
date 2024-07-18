@@ -16,14 +16,16 @@ namespace BookHub.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IInventoryService _inventoryService;
 
 
-        public ProductController(IProductModelFactory productModelFactory, IProductService productService, IWebHostEnvironment webHostEnvironment, ICategoryService categoryService)
+        public ProductController(IProductModelFactory productModelFactory, IProductService productService, IWebHostEnvironment webHostEnvironment, ICategoryService categoryService, IInventoryService inventoryService)
         {
             _productModelFactory = productModelFactory;
             _productService = productService;
             _webHostEnvironment = webHostEnvironment;
             _categoryService = categoryService;
+            _inventoryService = inventoryService;
         }
         public IActionResult Index()
         {
@@ -76,6 +78,30 @@ namespace BookHub.Controllers
             return Json(new { data = productListModelRet });
 
         }
+
+
+        public IActionResult GetInventoryDetails(int productId)
+        {
+            // Fetch inventory details based on productId
+
+            var prodInvList = _productModelFactory.PrepareProductListModel(productId);
+
+            var inventories = prodInvList.InventoryItems;
+
+            if (inventories != null && inventories.Any())
+            {
+                var result = inventories.Select(i => new
+                {
+                    quantity = i.Quantity,
+                    warehouse = i.WareHouse.Name
+                }).ToList();
+
+                return Json(result);
+            }
+
+            return Json(new List<object>());
+        }
+
 
 
 
