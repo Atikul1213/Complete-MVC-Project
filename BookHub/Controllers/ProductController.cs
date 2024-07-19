@@ -49,9 +49,14 @@ namespace BookHub.Controllers
     
 
         [HttpPost]
-        public IActionResult GetAll(int catid, string prodName, int price)
+   
+
+        public IActionResult GetAll(ProductSearchModel model)
         {
 
+            var catid = model.SelectedCategoryId;
+            var prodName = model.SearchName;
+            var price = model.MaxPrice;
 
             var listproduct = _productService.GetAllProducts();
 
@@ -61,12 +66,8 @@ namespace BookHub.Controllers
             foreach (var x in listproduct)
             {
                 ProductListMode obj = _productModelFactory.PrepareProductListModel(x.Id);
-                //bool ck = false; 
-                //if( catid>0 && obj.Items.categoryId == catid) ck = true;
-                //if(price>0 && obj.Items.Price<=price) ck = true;
-                //if(prodName!=null && obj.Items.Name.Contains(prodName)) ck = true;
-                //if(ck==true)
-                    productListModel.Add(obj);
+                 
+                productListModel.Add(obj);
             }
 
             if (productListModel.Count > 0)

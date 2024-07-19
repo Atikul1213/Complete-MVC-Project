@@ -140,14 +140,18 @@
 
 
             var table = $('#myTable').DataTable({
+                
                 rows: { "className": 'rowId' },
+
                 columns: [
                     {
+                        
                         "className": 'dt-control',
+                        "data": 'items.name', "title": 'Product Name',
                         "orderable": true,
                         "defaultContent": '',
+                         
                     },
-                    { data: 'items.name', title: 'Product Name' },
                     { data: 'items.price', title: 'Price' },
                     { data: 'items.category.name', title: 'Category Name' },
                     {
@@ -168,7 +172,7 @@
 
 
 
-
+           
 
 
 
@@ -188,18 +192,24 @@
             });
 
 
-
+           
 
 
             function loadProducts() {
-                var catid = $("#catid").val();
-                var prodName = $("#prodname").val();
-                var price = $("#price").val();
+                var postData = {
+                    MaxPrice: $("#price").val(),
+                    SelectedCategoryId: $("#catid").val(),
+                    SearchName: $("#prodname").val()
+                    
+                }
+                console.log("postdata: ", postData);
+
+ 
                 $.ajax({
                     type: 'POST',
                     "url": "@Url.Action("GetAll", "Product")",
                    
-                    data: { catid: catid, prodName: prodName, price: price },
+                    data: postData,
                     success: function (response) {
                         table.clear().rows.add(response.data).draw();
                     },
