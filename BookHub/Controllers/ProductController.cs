@@ -6,6 +6,7 @@ using BookHub.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 
 namespace BookHub.Controllers
 {
@@ -45,18 +46,24 @@ namespace BookHub.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public IActionResult GetList(ProductSearchModel model)
+        {
+            return Ok();
+        }
+
   
     
 
         [HttpPost]
-   
-
         public IActionResult GetAll(ProductSearchModel model)
         {
 
             var catid = model.SelectedCategoryId;
             var prodName = model.SearchName;
             var price = model.MaxPrice;
+            Console.WriteLine("Length: ", model.Length);
+            Console.WriteLine("Size: ", model.Start);
 
             var listproduct = _productService.GetAllProducts();
 
@@ -74,10 +81,12 @@ namespace BookHub.Controllers
             {
                 productListModelRet = productListModel.Where(x => (catid == 0 ||
                 x.Items.categoryId == catid) && (prodName == null ||
-                x.Items.Name.Contains(prodName)) && (price == 0 || x.Items.Price <= price)).ToList();
+                x.Items.Name.Contains(prodName)) && (price == 0 || x.Items.Price <= price)).Skip(model.Start).Take(model.Length).ToList();
             }
-            return Json(new { data = productListModelRet });
 
+            // .Skip(model.pageIndex * model.pageSize).Take(model.pageSize)
+
+            return Json(new { data = productListModelRet });
         }
 
 

@@ -16,6 +16,9 @@ namespace BookHub.Models
         public int MaxPrice { get; set; }
         public int SelectedCategoryId { get; set; }
 
+        public int Start { get; set; }
+        public int Length { get; set; }
+
 
     }
 }

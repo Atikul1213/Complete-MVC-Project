@@ -93,6 +93,39 @@
     <script>
         $(document).ready(function () {
 
+            // $("#myTable").DataTable({
+            //     serverSide: true,
+            //     ajax: {
+            //         url: '',
+            //         method: 'post',
+            //     },
+            //     rows: { "className": 'rowId' },
+            //     columns: [
+            //         {
+
+            //             "className": 'dt-control',
+            //             "data": 'items.name', "title": 'Product Name',
+            //             "orderable": true,
+            //             "defaultContent": '',
+
+            //         },
+            //         { data: 'items.price', title: 'Price' },
+            //         { data: 'items.category.name', title: 'Category Name' },
+            //         {
+            //             data: 'items.id',
+            //             orderable: false,
+            //             render: function (data) {
+            //                 return `
+            //                             <div class="w-75 btn-group" role="group">
+            //                                 <a href="/Product/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+            //                                 <a href="/Product/Details/${data}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
+            //                                 <a href="/Product/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+            //                             </div>`;
+            //             }
+            //         }
+            //     ]
+            // });
+
             function format(d) {
                 var inventoryDetails = '';
 
@@ -140,9 +173,12 @@
 
 
             var table = $('#myTable').DataTable({
-                
+                serverSide: true,
+                ajax:{
+                    url: "@Url.Action("GetAll", "Product")",
+                    method:"POST"
+                },
                 rows: { "className": 'rowId' },
-
                 columns: [
                     {
                         
@@ -169,7 +205,7 @@
                 ]
             });
 
-
+            
 
 
            
@@ -196,6 +232,8 @@
 
 
             function loadProducts() {
+
+
                 var postData = {
                     MaxPrice: $("#price").val(),
                     SelectedCategoryId: $("#catid").val(),
@@ -221,7 +259,7 @@
 
 
 
-            loadProducts();
+           // loadProducts();
 
             $("#mybutton").click(function (e) {
                 e.preventDefault();
