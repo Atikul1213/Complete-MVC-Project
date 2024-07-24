@@ -45,13 +45,7 @@ namespace BookHub.Controllers
 
             return View(model);
         }
-
-        [HttpPost]
-        public IActionResult GetList(ProductSearchModel model)
-        {
-            return Ok();
-        }
-
+ 
   
     
 
@@ -62,8 +56,8 @@ namespace BookHub.Controllers
             var catid = model.SelectedCategoryId;
             var prodName = model.SearchName;
             var price = model.MaxPrice;
-            Console.WriteLine("Length: ", model.Length);
-            Console.WriteLine("Size: ", model.Start);
+         //   Console.WriteLine("Length: ", model.Length);
+          //  Console.WriteLine("Size: ", model.Start);
 
             var listproduct = _productService.GetAllProducts();
 
@@ -88,6 +82,8 @@ namespace BookHub.Controllers
 
             return Json(new { data = productListModelRet });
         }
+
+ 
 
 
         public IActionResult GetInventoryDetails(int productId)

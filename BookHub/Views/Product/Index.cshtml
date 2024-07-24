@@ -68,7 +68,7 @@
 
     </div>
 
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="myTable" class="table table-striped ">
         <thead>
             <tr>
                 @* <th>Options</th> *@
@@ -88,43 +88,177 @@
 
 </div>
 
- 
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {
 
-            // $("#myTable").DataTable({
-            //     serverSide: true,
-            //     ajax: {
-            //         url: '',
-            //         method: 'post',
-            //     },
-            //     rows: { "className": 'rowId' },
-            //     columns: [
-            //         {
+            function format(d) {
+                var inventoryDetails = '';
 
-            //             "className": 'dt-control',
-            //             "data": 'items.name', "title": 'Product Name',
-            //             "orderable": true,
-            //             "defaultContent": '',
+                // Ajax call to fetch inventory details
+                $.ajax({
+                    url: '@Url.Action("GetInventoryDetails", "Product")',
+                    type: 'GET',
+                    data: { productId: d.items.id },
+                    async: false,
+                    success: function (response) {
+                        if (response.length > 0) {
+                            inventoryDetails = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                                '<tr>' +
+                                '<td colspan="2"><strong>Inventory Details:</strong></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                '<td>Warehouse Name</td>' +
+                                '<td>Quantity</td>' +
+                                '</tr>';
 
-            //         },
-            //         { data: 'items.price', title: 'Price' },
-            //         { data: 'items.category.name', title: 'Category Name' },
-            //         {
-            //             data: 'items.id',
-            //             orderable: false,
-            //             render: function (data) {
-            //                 return `
-            //                             <div class="w-75 btn-group" role="group">
-            //                                 <a href="/Product/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
-            //                                 <a href="/Product/Details/${data}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
-            //                                 <a href="/Product/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
-            //                             </div>`;
-            //             }
-            //         }
-            //     ]
-            // });
+                            response.forEach(function (item) {
+                                inventoryDetails += '<tr>' +
+                                    '<td>' + item.warehouse + '</td>' +
+                                    '<td>' + item.quantity + '</td>' +
+                                    '</tr>';
+                            });
+
+                            inventoryDetails += '</table>';
+                        } else {
+                            inventoryDetails = '<tr><td colspan="2">No inventory details available.</td></tr>';
+                        }
+                    },
+                    error: function () {
+                        inventoryDetails = '<tr><td colspan="2">Error fetching inventory details.</td></tr>';
+                    }
+                });
+
+                return inventoryDetails;
+            }
+
+            var table = $('#myTable').DataTable({
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: "@Url.Action("GetAll", "Product")",
+                    type: "POST",
+                    data: function (d) {
+                        return $.extend({}, d, {
+                            MaxPrice: $("#price").val(),
+                            SelectedCategoryId: $("#catid").val(),
+                            SearchName: $("#prodname").val(),
+                            length: d.length,
+                            start: d.start
+                        });
+                    }
+                },
+                rows: { "className": 'rowId' },
+                columns: [
+                    {
+                        "className": 'dt-control',
+                        "data": 'items.name',
+                        "title": 'Product Name',
+                        "orderable": true,
+                        "defaultContent": '',
+                    },
+                    { data: 'items.price', title: 'Price' },
+                    { data: 'items.category.name', title: 'Category Name' },
+                    {
+                        data: 'items.id',
+                        orderable: false,
+                        render: function (data) {
+                            return `
+                                        <div class="w-75 btn-group" role="group">
+                                            <a href="/Product/Edit/${data}" class="btn btn-primary"><i class="bi bi-pencil-fill"></i></a>
+                                            <a href="/Product/Details/${data}" class="btn btn-primary"><i class="bi bi-list-check"></i></a>
+                                            <a href="/Product/Delete/${data}" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                                        </div>`;
+                        }
+                    }
+                ]
+            });
+
+            $('#myTable tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
+            });
+
+            function loadProducts() {
+                var pageLength = table.page.len();
+                var pageStart = table.page.info().start;
+
+                var postData = {
+                    MaxPrice: $("#price").val(),
+                    SelectedCategoryId: $("#catid").val(),
+                    SearchName: $("#prodname").val(),
+                    length: pageLength,
+                    start: pageStart
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: "@Url.Action("GetAll", "Product")",
+                    data: postData,
+                    success: function (response) {
+                        table.clear().rows.add(response.data).draw();
+                    },
+                    error: function () {
+                        alert('Error fetching data.');
+                    }
+                });
+            }
+
+            $("#mybutton").click(function (e) {
+                e.preventDefault();
+                loadProducts();
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+@*  
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+ 
 
             function format(d) {
                 var inventoryDetails = '';
@@ -171,8 +305,9 @@
 
 
 
-
+ 
             var table = $('#myTable').DataTable({
+
                 serverSide: true,
                 ajax:{
                     url: "@Url.Action("GetAll", "Product")",
@@ -233,12 +368,12 @@
 
             function loadProducts() {
 
-
                 var postData = {
                     MaxPrice: $("#price").val(),
                     SelectedCategoryId: $("#catid").val(),
                     SearchName: $("#prodname").val()
-                    
+                     Length: $('#myTable').length,
+                    Start: $('#myTable').ajaxStart
                 }
                 console.log("postdata: ", postData);
 
@@ -272,4 +407,4 @@
 
         });
     </script>
-}
+} *@
