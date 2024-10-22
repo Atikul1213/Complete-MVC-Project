@@ -89,6 +89,12 @@
 </div>
 
 
+ 
+ 
+
+
+
+
 
 @section Scripts {
     <script>
@@ -122,6 +128,7 @@
                             });
 
                             inventoryDetails += '</table>';
+
                         } else {
                             inventoryDetails = '<tr><td colspan="2">No inventory details available.</td></tr>';
                         }
@@ -174,7 +181,11 @@
                         }
                     }
                 ]
+
+                 
             });
+
+ 
 
             $('#myTable tbody').on('click', 'td.dt-control', function () {
                 var tr = $(this).closest('tr');
@@ -214,12 +225,19 @@
                         alert('Error fetching data.');
                     }
                 });
+
+                
             }
 
             $("#mybutton").click(function (e) {
                 e.preventDefault();
                 loadProducts();
             });
+
+
+             
+
+
         });
     </script>
 }
@@ -229,32 +247,11 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@*  
 
 
 
  
-@*  
 @section Scripts {
     <script>
         $(document).ready(function () {

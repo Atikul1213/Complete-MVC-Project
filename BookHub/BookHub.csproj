@@ -30,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\DataTables\datatables.js" />
-    <None Include="wwwroot\DataTables\datatables.min.js" />
     <None Include="wwwroot\js\Inventory.js" />
   </ItemGroup>
 

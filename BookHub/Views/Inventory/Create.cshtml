@@ -118,7 +118,19 @@
 
 
 
+<script>
+    $.ajax({
+        type: "POST",
+        url: '/Inventory/GetAll',
+        data: PostData,
+        success: function (response) {
 
+        },
+        error: function (err) {
+            alert(err.message);
+        }
+    });
+</script>
 
 
 
